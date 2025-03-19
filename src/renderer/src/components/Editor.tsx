@@ -36,13 +36,14 @@ const Editor = (): JSX.Element => {
       e.preventDefault()
       const trimmedText = currentText.trim()
       if (trimmedText) {
-        const newItem: ListItem = {
-          id: items.length + 1,
-          text: trimmedText,
-          pinyin: convertToPinyin(trimmedText)
-        }
-        
-        setItems([...items, newItem])
+        const textParts = trimmedText.split(/(?:\r\n|\n){2,}/).filter((part) => part.trim() !== '')
+        const newItems = textParts.map((text, index) => ({
+          id: items.length + index + 1,
+          text: text.trim(),
+          pinyin: convertToPinyin(text.trim())
+        }))
+
+        setItems([...items, ...newItems])
         setCurrentText('')
       }
     }
@@ -51,20 +52,20 @@ const Editor = (): JSX.Element => {
   const renderAlignedText = (text: string, pinyinText: string): JSX.Element => {
     const lines = text.split('\n')
     const pinyinLines = pinyinText.split('\n')
-    
+
     return (
       <div className="aligned-text">
         {lines.map((line, lineIndex) => {
           const chars = line.split('')
           const pinyinWords = pinyinLines[lineIndex]?.split(' ') || []
           let pinyinIndex = 0
-          
+
           return (
             <div key={`line-${lineIndex}`} className="text-line">
               {chars.map((char, charIndex) => {
                 const isChinese = isChineseChar(char)
                 const pinyin = isChinese ? pinyinWords[pinyinIndex++] : ''
-                
+
                 return (
                   <div key={`char-group-${lineIndex}-${charIndex}`} className="char-group">
                     <span className="pinyin-char">{pinyin}</span>
@@ -80,10 +81,14 @@ const Editor = (): JSX.Element => {
   }
 
   const handleDelete = (id: number): void => {
-    setItems(items.filter(item => item.id !== id).map((item, index) => ({
-      ...item,
-      id: index + 1
-    })))
+    setItems(
+      items
+        .filter((item) => item.id !== id)
+        .map((item, index) => ({
+          ...item,
+          id: index + 1
+        }))
+    )
   }
 
   return (
@@ -95,7 +100,9 @@ const Editor = (): JSX.Element => {
             <div key={item.id} className="list-item">
               <span className="item-number">{item.id}.</span>
               {renderAlignedText(item.text, item.pinyin)}
-              <span className="delete-icon" onClick={() => handleDelete(item.id)}>×</span>
+              <span className="delete-icon" onClick={() => handleDelete(item.id)}>
+                ×
+              </span>
             </div>
           ))}
         </div>
