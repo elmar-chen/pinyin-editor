@@ -47,6 +47,7 @@
   border-radius: 4px;
   border: 1px solid #dee2e6;
   min-height: 80mm;
+  overflow-y: auto;
 }
 
 .pinyin-display h3 {
@@ -55,19 +56,53 @@
   font-size: 1.2rem;
 }
 
+.list-item {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.list-item:hover {
+  background-color: #e9ecef;
+}
+
+.list-item.current {
+  background-color: #e3f2fd;
+}
+
+.item-number {
+  color: #6c757d;
+  font-weight: 500;
+  min-width: 2em;
+  padding-top: 0.2em;
+}
+
 .aligned-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  line-height: 1.6;
+  flex: 1;
+}
+
+.text-line {
   display: flex;
   flex-wrap: wrap;
   gap: 0;
-  line-height: 1.6;
+  min-height: 2.5em;
 }
 
 .char-group {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 0 0.1em;
   gap: 0.1rem;
+  min-height: 2.5em;
 }
 
 .pinyin-char {
@@ -76,6 +111,12 @@
   text-align: center;
   min-height: 1.2em;
   white-space: nowrap;
+  display: block;
+  visibility: hidden;
+}
+
+.pinyin-char:not(:empty) {
+  visibility: visible;
 }
 
 .chinese-char {
@@ -83,6 +124,8 @@
   font-size: 1.2em;
   text-align: center;
   white-space: nowrap;
+  display: block;
+  margin-top: 0.2em;
 }
 
 .text-editor {
@@ -128,4 +171,28 @@
   .text-editor {
     border: none;
   }
-} 
+}
+
+.list-item {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.delete-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: red;
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.list-item:hover .delete-icon {
+  opacity: 1;
+}
+
+.char-group:hover .delete-icon {
+  opacity: 1;
+}
